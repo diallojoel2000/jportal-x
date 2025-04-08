@@ -33,8 +33,8 @@ const Sidebar = () => {
                       to="/users"
                       className={({ isActive }) => {
                         if (isActive) {
-                          setNavTreeActive(true);
-                          setNavTreeOpen(true);
+                          //setNavTreeActive(true);
+                          //setNavTreeOpen(true);
                         }
                         return isActive ? "nav-link active" : "nav-link";
                       }}

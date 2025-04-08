@@ -1,3 +1,4 @@
+import { Form } from "react-router-dom";
 const Header = () => {
   return (
     <>
@@ -74,12 +75,14 @@ const Header = () => {
               </a>
               <ul className="dropdown-menu dropdown-menu-lg dropdown-menu-end">
                 <li className="user-footer">
-                  <a href="#" className="btn btn-default btn-flat">
-                    Profile
-                  </a>
-                  <a href="#" className="btn btn-default btn-flat float-end">
-                    Sign out
-                  </a>
+                  <Form method="POST" action="/auth/logout">
+                    <button
+                      type="submit"
+                      className="btn btn-default btn-flat float-end"
+                    >
+                      Logout
+                    </button>
+                  </Form>
                 </li>
               </ul>
             </li>

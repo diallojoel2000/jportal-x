@@ -1,21 +1,61 @@
-import { useEffect, useState } from "react";
-import { Outlet, useNavigate, Navigate, useLocation } from "react-router-dom";
+import { useEffect, useState, useRef } from "react";
+import { Outlet, Navigate, useLocation, useSubmit } from "react-router-dom";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
 import Breadcrum from "./Breadcrum";
 import Footer from "./Footer";
+import { hasToken } from "../../util/auth";
+
+let idleTimeout = import.meta.env.VITE_IDLE_TIMEOUT;
+
 const Layout = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const navigate = useNavigate();
+  const [isAuthenticated, setIsAuthenticated] = useState(hasToken);
+  const idleTimer = useRef();
   const location = useLocation();
+  const submit = useSubmit();
+
+  const handleAutoLogout = () => {
+    clearTimeout(idleTimer.current);
+
+    idleTimer.current = setTimeout(() => {
+      clearTimeout(idleTimer.current);
+      setIsAuthenticated(false);
+      submit(null, { method: "post", action: "/auth/logout" });
+    }, idleTimeout);
+  };
 
   useEffect(() => {
     document.body.className = "sidebar-expand-lg bg-body-tertiary";
-  }, []);
+
+    const handleMouseMove = () => {
+      if (isAuthenticated) {
+        handleAutoLogout();
+      }
+    };
+    const handleKeyPress = () => {
+      if (isAuthenticated) {
+        handleAutoLogout();
+      }
+    };
+
+    if (isAuthenticated) {
+      document.addEventListener("mousemove", handleMouseMove);
+      document.addEventListener("keypress", handleKeyPress);
+
+      handleAutoLogout();
+    }
+
+    return () => {
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("keypress", handleKeyPress);
+      clearTimeout(idleTimer.current);
+    };
+  }, [isAuthenticated, handleAutoLogout]);
 
   if (!isAuthenticated) {
     return <Navigate to="/auth/login" state={{ from: location }} replace />;
   }
+
   return (
     <>
       <div className="app-wrapper">

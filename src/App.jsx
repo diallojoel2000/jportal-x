@@ -3,11 +3,22 @@ import "./App.css";
 import Layout from "./components/layout/Layout";
 import EmptyLayout from "./components/layout/EmptyLayout";
 import Users from "./pages/UsersPage";
-import LoginPage from "./pages/LoginPage";
+import LoginPage, { action as authAction } from "./pages/LoginPage";
 import ErrorPage from "./pages/ErrorPage";
 import HomePage from "./pages/HomePage";
+import { action as logoutAction } from "./pages/Logout";
 
 const router = createBrowserRouter([
+  {
+    path: "/auth/login",
+    element: <LoginPage />,
+    action: authAction,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "/auth/logout",
+    action: logoutAction,
+  },
   {
     path: "/",
     errorElement: <ErrorPage />,
@@ -17,12 +28,6 @@ const router = createBrowserRouter([
       { path: "/users", element: <Users /> },
       { path: "/permissions", element: <Users /> },
     ],
-  },
-  {
-    path: "/auth",
-    errorElement: <ErrorPage />,
-    element: <EmptyLayout />,
-    children: [{ path: "login", element: <LoginPage /> }],
   },
 ]);
 

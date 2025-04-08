@@ -1,81 +1,61 @@
-const LoginPage = () => {
-  return (
-    <>
-      <div className="login-page">
-        <div className="row">
-          <div className="col-md-8">
-            <span
-              className="primary"
-              style={{ fontSize: "40px", color: "darkblue" }}
-            >
-              <b>
-                LOGIN TO MY<span style={{ color: "#000" }}>APP</span>
-              </b>
-            </span>
-            <br />
-            <span style={{ fontSize: "18px", textAlign: "justify" }}>
-              This is just a sample app.
-            </span>
-          </div>
-          <div className="col-md-4 float-right">
-            <div className="login-box ">
-              <div className="card card-outline card-primary">
-                <div className="card-body login-card-body">
-                  <p className="login-box-msg">Sign in to start your session</p>
-                  <form>
-                    <div className="input-group mb-3">
-                      <input
-                        type="email"
-                        className="form-control"
-                        placeholder="Email"
-                      />
-                      <div className="input-group-text">
-                        <span className="bi bi-envelope"></span>
-                      </div>
-                    </div>
-                    <div className="input-group mb-3">
-                      <input
-                        type="password"
-                        className="form-control"
-                        placeholder="Password"
-                      />
-                      <div className="input-group-text">
-                        <span className="bi bi-lock-fill"></span>
-                      </div>
-                    </div>
-                    <div className="row">
-                      <div className="col-8">
-                        <div className="form-check">
-                          <input
-                            className="form-check-input"
-                            type="checkbox"
-                            value=""
-                            id="flexCheckDefault"
-                          />
-                          <label className="form-check-label">
-                            {" "}
-                            Remember Me{" "}
-                          </label>
-                        </div>
-                      </div>
+import { useEffect, useRef } from "react";
+import { redirect } from "react-router-dom";
+import { login } from "../http";
+import AuthForm from "../components/AuthForm";
+import { hasToken, getToken } from "../util/auth";
 
-                      <div className="col-12">
-                        <div className="d-grid gap-2">
-                          <button type="submit" className="btn btn-primary">
-                            Sign In
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </form>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </>
-  );
+let refreshTokenTimout = import.meta.env.VITE_REFRESH_TOKEN_TIMEOUT;
+let refreshTokenTimer;
+
+const LoginPage = () => {
+  useEffect(() => {
+    document.body.className = "login-page bg-body-secondary";
+  }, []);
+  return <AuthForm />;
 };
 
 export default LoginPage;
+
+export async function action({ request }) {
+  const data = await request.formData();
+  const authData = {
+    username: data.get("username"),
+    password: data.get("password"),
+  };
+
+  const response = await fetch("https://localhost:7048/Authentication/Login", {
+    method: "POST",
+    body: JSON.stringify(authData),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const responseData = await response.json();
+  if (response.status === 400 || response.status === 401) {
+    return responseData;
+  }
+
+  if (!response.ok) {
+    throw json({ message: "Could not authenticate user" }, { status: 500 });
+  }
+  const token = responseData.result.token;
+
+  refreshTokenTimer = setInterval(() => {
+    handleRefreshToken();
+  }, refreshTokenTimout);
+
+  localStorage.setItem("token", token);
+
+  return redirect("/");
+}
+
+const handleRefreshToken = () => {
+  const token = getToken();
+
+  if (token === null || token === undefined) {
+    clearInterval(refreshTokenTimer);
+  } else {
+    console.log("refreshing token");
+  }
+};

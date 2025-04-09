@@ -29,6 +29,7 @@ export async function action({ request }) {
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "include",
   });
 
   const responseData = await response.json();
@@ -50,12 +51,26 @@ export async function action({ request }) {
   return redirect("/");
 }
 
-const handleRefreshToken = () => {
+const handleRefreshToken = async () => {
   const token = getToken();
 
   if (token === null || token === undefined) {
     clearInterval(refreshTokenTimer);
   } else {
+    const response = await fetch(
+      "https://localhost:7048/Authentication/RefreshToken",
+      {
+        method: "POST",
+        //body: JSON.stringify(authData),
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        credentials: "include",
+      }
+    );
+
+    //const responseData = await response.json();
     console.log("refreshing token");
   }
 };

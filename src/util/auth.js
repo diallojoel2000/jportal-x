@@ -4,9 +4,5 @@ export const getToken = () => {
 };
 
 export const hasToken = () => {
-  const token = getToken();
-  if (token === null || token === undefined) {
-    return false;
-  }
-  return true;
+  return getToken();
 };

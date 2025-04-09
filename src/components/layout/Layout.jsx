@@ -1,15 +1,22 @@
-import { useEffect, useState, useRef } from "react";
-import { Outlet, Navigate, useLocation, useSubmit } from "react-router-dom";
+import { useEffect, useRef } from "react";
+import {
+  Outlet,
+  Navigate,
+  useLocation,
+  useSubmit,
+  useLoaderData,
+} from "react-router-dom";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
 import Breadcrum from "./Breadcrum";
 import Footer from "./Footer";
-import { hasToken } from "../../util/auth";
+import CustomError from "./CustomError";
 
 let idleTimeout = import.meta.env.VITE_IDLE_TIMEOUT;
 
 const Layout = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(hasToken);
+  var isAuthenticated = useLoaderData();
+  console.log(`loader data ${isAuthenticated}`);
   const idleTimer = useRef();
   const location = useLocation();
   const submit = useSubmit();
@@ -19,7 +26,6 @@ const Layout = () => {
 
     idleTimer.current = setTimeout(() => {
       clearTimeout(idleTimer.current);
-      setIsAuthenticated(false);
       submit(null, { method: "post", action: "/auth/logout" });
     }, idleTimeout);
   };
@@ -53,6 +59,7 @@ const Layout = () => {
   }, [isAuthenticated, handleAutoLogout]);
 
   if (!isAuthenticated) {
+    clearTimeout(idleTimer.current);
     return <Navigate to="/auth/login" state={{ from: location }} replace />;
   }
 
@@ -66,7 +73,7 @@ const Layout = () => {
             <div className="container-fluid">
               <div className="row">
                 <Breadcrum />
-
+                <CustomError />
                 <Outlet />
               </div>
             </div>

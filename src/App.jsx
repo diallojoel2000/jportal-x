@@ -7,6 +7,7 @@ import LoginPage, { action as authAction } from "./pages/LoginPage";
 import ErrorPage from "./pages/ErrorPage";
 import HomePage from "./pages/HomePage";
 import { action as logoutAction } from "./pages/Logout";
+import { hasToken } from "./util/auth";
 
 const router = createBrowserRouter([
   {
@@ -23,6 +24,8 @@ const router = createBrowserRouter([
     path: "/",
     errorElement: <ErrorPage />,
     element: <Layout />,
+    id: "root",
+    loader: hasToken,
     children: [
       { index: true, element: <HomePage /> },
       { path: "/users", element: <Users /> },

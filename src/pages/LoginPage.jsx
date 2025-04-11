@@ -4,6 +4,7 @@ import { login } from "../http";
 import AuthForm from "../components/AuthForm";
 import { hasToken, getToken } from "../util/auth";
 
+let baseUrl = import.meta.env.VITE_BACKEND_URL;
 let refreshTokenTimout = import.meta.env.VITE_REFRESH_TOKEN_TIMEOUT;
 let refreshTokenTimer;
 
@@ -23,7 +24,7 @@ export async function action({ request }) {
     password: data.get("password"),
   };
 
-  const response = await fetch("https://localhost:7048/Authentication/Login", {
+  const response = await fetch(`${baseUrl}/Authentication/Login`, {
     method: "POST",
     body: JSON.stringify(authData),
     headers: {
@@ -57,20 +58,24 @@ const handleRefreshToken = async () => {
   if (token === null || token === undefined) {
     clearInterval(refreshTokenTimer);
   } else {
-    const response = await fetch(
-      "https://localhost:7048/Authentication/RefreshToken",
-      {
-        method: "POST",
-        //body: JSON.stringify(authData),
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        credentials: "include",
-      }
-    );
+    const response = await fetch(`${baseUrl}/Authentication/RefreshToken`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${getToken()}`,
+      },
+      credentials: "include",
+    });
 
-    //const responseData = await response.json();
-    console.log("refreshing token");
+    const responseData = await response.json();
+    if (response.status === 400 || response.status === 401) {
+      return responseData;
+    }
+
+    if (!response.ok) {
+      throw json({ message: "Could not refresh token" }, { status: 500 });
+    }
+    const token = responseData.result.token;
+    localStorage.setItem("token", token);
   }
 };

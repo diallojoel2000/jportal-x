@@ -16,7 +16,7 @@ let idleTimeout = import.meta.env.VITE_IDLE_TIMEOUT;
 
 const Layout = () => {
   var isAuthenticated = useLoaderData();
-  console.log(`loader data ${isAuthenticated}`);
+
   const idleTimer = useRef();
   const location = useLocation();
   const submit = useSubmit();
@@ -73,7 +73,7 @@ const Layout = () => {
             <div className="container-fluid">
               <div className="row">
                 <Breadcrum />
-                <CustomError />
+                <div id="alert-div"></div>
                 <Outlet />
               </div>
             </div>

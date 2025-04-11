@@ -1,7 +1,58 @@
+import { useState, useRef } from "react";
 import { NavLink } from "react-router-dom";
-import NavLinkTree from "../NavLinkTree";
+
+//Parent does not need permission check, this will be checked in submenu
+//use UseEffect to load the sidebar if the menu is coming from backend
+const SIDE_BAR_MENU = [
+  {
+    name: "User Management",
+    path: "#",
+    icon: "bi bi-person-fill-gear",
+    permission: "ManageUser",
+    subMenu: [
+      {
+        name: "Users",
+        path: "/user-management/users",
+        icon: "bi bi-people",
+        permission: "ManageUser",
+      },
+      {
+        name: "Roles",
+        path: "/user-management/roles",
+        icon: "bi bi-universal-access",
+        permission: "ManageUser",
+      },
+    ],
+  },
+  {
+    name: "User Management1",
+    path: "#",
+    icon: "bi bi-person-fill-gear",
+    permission: "ManageUser",
+    subMenu: [
+      {
+        name: "Users1",
+        path: "/user-management/users1",
+        icon: "bi bi-people",
+        permission: "ManageUser",
+      },
+      {
+        name: "Roles1",
+        path: "/user-management/roles1",
+        icon: "bi bi-universal-access",
+        permission: "ManageUser",
+      },
+    ],
+  },
+];
 
 const Sidebar = () => {
+  const parentRef = useRef();
+  const [treeNavIndex, setTreeNavIndex] = useState(null);
+
+  const toggleMenu = (index) => {
+    setTreeNavIndex(index);
+  };
   return (
     <>
       <aside
@@ -26,43 +77,51 @@ const Sidebar = () => {
               role="menu"
               data-accordion="false"
             >
-              <NavLinkTree>
-                <ul className="nav nav-treeview">
-                  <li className="nav-item">
-                    <NavLink
-                      to="/users"
-                      className={({ isActive }) => {
-                        if (isActive) {
-                          //setNavTreeActive(true);
-                          //setNavTreeOpen(true);
-                        }
-                        return isActive ? "nav-link active" : "nav-link";
-                      }}
-                    >
-                      <i className="nav-icon bi bi-people"></i>
-                      <p>Users</p>
-                    </NavLink>
-                  </li>
-                  <li className="nav-item">
-                    <NavLink to="../index2.html" className="nav-link">
-                      <i className="nav-icon bi bi-universal-access"></i>
-                      <p>Roles</p>
-                    </NavLink>
-                  </li>
-                  <li className="nav-item">
-                    <NavLink to="../index3.html" className="nav-link">
-                      <i className="nav-icon bi bi-shield-lock"></i>
-                      <p>Permissions</p>
-                    </NavLink>
-                  </li>
-                  <li className="nav-item">
-                    <NavLink to="../index3.html" className="nav-link">
-                      <i className="nav-icon bi bi-person-lock"></i>
-                      <p>Users In Role</p>
-                    </NavLink>
-                  </li>
-                </ul>
-              </NavLinkTree>
+              {SIDE_BAR_MENU.map((menu, menuIndex) => (
+                <li
+                  key={menuIndex}
+                  className={`nav-item ${
+                    treeNavIndex === menuIndex ? "menu-open" : ""
+                  }`}
+                  onClick={() => {
+                    toggleMenu(menuIndex);
+                  }}
+                >
+                  <NavLink
+                    to={menu.path}
+                    className={({ isActive }) =>
+                      isActive ? "nav-link active" : "nav-link"
+                    }
+                  >
+                    <i className={`nav-icon ${menu.icon}`}></i>
+
+                    <p>
+                      {menu.name}
+                      {menu.subMenu.length > 0 && (
+                        <i className="nav-arrow bi bi-chevron-right"></i>
+                      )}
+                    </p>
+                  </NavLink>
+
+                  {menu.subMenu.length > 0 && (
+                    <ul className="nav nav-treeview">
+                      {menu.subMenu.map((subMenu, subMenuKey) => (
+                        <li key={subMenuKey} className="nav-item">
+                          <NavLink
+                            to={subMenu.path}
+                            className={({ isActive }) =>
+                              isActive ? "nav-link active" : "nav-link"
+                            }
+                          >
+                            <i className={`nav-icon ${subMenu.icon}`}></i>
+                            <p>{subMenu.name}</p>
+                          </NavLink>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </li>
+              ))}
             </ul>
           </nav>
         </div>

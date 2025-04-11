@@ -2,7 +2,8 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./App.css";
 import Layout from "./components/layout/Layout";
 import EmptyLayout from "./components/layout/EmptyLayout";
-import Users from "./pages/UsersPage";
+import UsersPage from "./pages/UsersPage";
+import RolePage from "./pages/UserManagement/RolePage";
 import LoginPage, { action as authAction } from "./pages/LoginPage";
 import ErrorPage from "./pages/ErrorPage";
 import HomePage from "./pages/HomePage";
@@ -28,8 +29,8 @@ const router = createBrowserRouter([
     loader: hasToken,
     children: [
       { index: true, element: <HomePage /> },
-      { path: "/users", element: <Users /> },
-      { path: "/permissions", element: <Users /> },
+      { path: "/user-management/users", element: <UsersPage /> },
+      { path: "/user-management/roles", element: <RolePage /> },
     ],
   },
 ]);

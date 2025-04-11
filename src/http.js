@@ -7,13 +7,15 @@ export async function login(command) {
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "include",
   });
 
   const data = await response.json();
   if (!response.ok) {
     const errors = Object.values(data.errors).flat();
     console.log(errors);
-    throw new Error(data.title);
+    return response;
+    //throw new Error(data.title);
   }
 
   return data;

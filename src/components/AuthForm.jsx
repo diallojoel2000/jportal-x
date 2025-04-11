@@ -1,6 +1,8 @@
-import { Form, useActionData } from "react-router-dom";
+import { Form, useActionData, useNavigate } from "react-router-dom";
 const AuthForm = () => {
   const data = useActionData();
+  const navigation = useNavigate();
+  const isSubmitting = navigation.state === "submitting";
   return (
     <>
       <div className="login-page">
@@ -74,7 +76,11 @@ const AuthForm = () => {
 
                       <div className="col-12">
                         <div className="d-grid gap-2">
-                          <button type="submit" className="btn btn-primary">
+                          <button
+                            disabled={isSubmitting}
+                            type="submit"
+                            className="btn btn-primary"
+                          >
                             Sign In
                           </button>
                         </div>

@@ -1,5 +1,7 @@
 import { Form } from "react-router-dom";
+import { getUser } from "../../util/auth";
 const Header = () => {
+  const user = getUser();
   return (
     <>
       <nav className="app-header navbar navbar-expand bg-body">
@@ -71,7 +73,7 @@ const Header = () => {
                   className="user-image rounded-circle shadow"
                   alt="User Image"
                 />
-                <span className="d-none d-md-inline">Alexander Pierce</span>
+                <span className="d-none d-md-inline">{user.Username}</span>
               </a>
               <ul className="dropdown-menu dropdown-menu-lg dropdown-menu-end">
                 <li className="user-footer">

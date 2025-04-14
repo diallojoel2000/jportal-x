@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import { redirect } from "react-router-dom";
 import { login } from "../http";
 import AuthForm from "../components/AuthForm";
-import { hasToken, getToken } from "../util/auth";
+import { hasToken, getToken, encrypt } from "../util/auth";
 
 let baseUrl = import.meta.env.VITE_BACKEND_URL;
 let refreshTokenTimout = import.meta.env.VITE_REFRESH_TOKEN_TIMEOUT;
@@ -20,8 +20,8 @@ export default LoginPage;
 export async function action({ request }) {
   const data = await request.formData();
   const authData = {
-    username: data.get("username"),
-    password: data.get("password"),
+    username: encrypt(data.get("username")),
+    password: encrypt(data.get("password")),
   };
 
   const response = await fetch(`${baseUrl}/Authentication/Login`, {

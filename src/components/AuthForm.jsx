@@ -30,7 +30,9 @@ const AuthForm = () => {
                   {data && data.errors && (
                     <ul>
                       {Object.values(data.errors).map((error) => (
-                        <li key={error}>{error}</li>
+                        <li className="text-danger" key={error}>
+                          {error}
+                        </li>
                       ))}
                     </ul>
                   )}
@@ -42,6 +44,7 @@ const AuthForm = () => {
                         type="email"
                         className="form-control"
                         placeholder="Email"
+                        required
                       />
                       <div className="input-group-text">
                         <span className="bi bi-envelope"></span>
@@ -53,6 +56,7 @@ const AuthForm = () => {
                         type="password"
                         className="form-control"
                         placeholder="Password"
+                        required
                       />
                       <div className="input-group-text">
                         <span className="bi bi-lock-fill"></span>

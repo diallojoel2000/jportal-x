@@ -10,6 +10,19 @@ export async function login(command) {
     credentials: "include",
   });
 
+  return response;
+}
+
+export async function cccccc(command) {
+  const response = await fetch(`${baseUrl}/Authentication/Login`, {
+    method: "POST",
+    body: JSON.stringify(command),
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+  });
+
   const data = await response.json();
   if (!response.ok) {
     const errors = Object.values(data.errors).flat();

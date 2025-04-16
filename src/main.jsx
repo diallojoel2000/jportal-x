@@ -5,9 +5,13 @@ import "./scss/styles.scss";
 import * as bootstrap from "bootstrap";
 import "admin-lte/dist/css/adminlte.css";
 import "admin-lte/dist/js/adminlte.min.js";
+import { Provider } from "react-redux";
+import store from "./store/index.js";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <App />
+    <Provider store={store}>
+      <App />
+    </Provider>
   </StrictMode>
 );

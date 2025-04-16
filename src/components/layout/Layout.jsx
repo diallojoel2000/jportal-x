@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { useSelector } from "react-redux";
 import {
   Outlet,
   Navigate,
@@ -15,7 +16,7 @@ import CustomError from "./CustomError";
 let idleTimeout = import.meta.env.VITE_IDLE_TIMEOUT;
 
 const Layout = () => {
-  var isAuthenticated = useLoaderData();
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
 
   const idleTimer = useRef();
   const location = useLocation();

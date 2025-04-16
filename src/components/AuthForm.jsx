@@ -1,8 +1,87 @@
-import { Form, useActionData, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { useActionData, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { authActions } from "../store/auth-slice";
+import { encrypt } from "../util/auth";
+import { login } from "../http";
+
+let baseUrl = import.meta.env.VITE_BACKEND_URL;
+let refreshTokenTimout = import.meta.env.VITE_REFRESH_TOKEN_TIMEOUT;
+let refreshTokenTimer;
+
 const AuthForm = () => {
-  const data = useActionData();
+  const [message, setMessage] = useState({});
+  const dispatch = useDispatch();
   const navigation = useNavigate();
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   const isSubmitting = navigation.state === "submitting";
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    const formData = new FormData(event.target);
+    const data = Object.fromEntries(formData);
+
+    const authData = {
+      username: encrypt(data.username),
+      password: encrypt(data.password),
+    };
+
+    try {
+      var response = await login(authData);
+
+      const responseData = await response.json();
+      if (response.status === 400 || response.status === 401) {
+        setMessage(responseData);
+        return;
+      }
+
+      refreshTokenTimer = setInterval(() => {
+        handleRefreshToken();
+      }, refreshTokenTimout);
+
+      const token = responseData.result.token;
+      localStorage.setItem("token", token);
+      dispatch(authActions.login());
+      navigation("/");
+    } catch (e) {
+      console.log(e);
+      const em = {
+        errors: [
+          "Could not authenticate user at the moment, please try again later",
+        ],
+      };
+      setMessage(em);
+      return;
+    }
+  };
+
+  const handleRefreshToken = async () => {
+    if (!isAuthenticated) {
+      clearInterval(refreshTokenTimer);
+    } else {
+      const response = await fetch(`${baseUrl}/Authentication/RefreshToken`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${getToken()}`,
+        },
+        credentials: "include",
+      });
+
+      const responseData = await response.json();
+      if (response.status === 400 || response.status === 401) {
+        return responseData;
+      }
+
+      if (!response.ok) {
+        throw json({ message: "Could not refresh token" }, { status: 500 });
+      }
+      const token = responseData.result.token;
+      localStorage.setItem("token", token);
+    }
+  };
+
   return (
     <>
       <div className="login-page">
@@ -27,9 +106,9 @@ const AuthForm = () => {
               <div className="card card-outline card-primary">
                 <div className="card-body login-card-body">
                   <p className="login-box-msg">Sign in to start your session</p>
-                  {data && data.errors && (
+                  {message && message.errors && (
                     <ul>
-                      {Object.values(data.errors).map((error) => (
+                      {Object.values(message.errors).map((error) => (
                         <li className="text-danger" key={error}>
                           {error}
                         </li>
@@ -37,7 +116,7 @@ const AuthForm = () => {
                     </ul>
                   )}
 
-                  <Form method="post">
+                  <form method="post" onSubmit={(event) => handleSubmit(event)}>
                     <div className="input-group mb-3">
                       <input
                         name="username"
@@ -90,7 +169,7 @@ const AuthForm = () => {
                         </div>
                       </div>
                     </div>
-                  </Form>
+                  </form>
                 </div>
               </div>
             </div>

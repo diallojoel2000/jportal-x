@@ -1,12 +1,9 @@
 import { useEffect, useRef } from "react";
 import { redirect } from "react-router-dom";
-import { login } from "../util/http";
 import AuthForm from "../components/AuthForm";
-import { hasToken, getToken, encrypt } from "../util/auth";
+import { encrypt } from "../util/auth";
 
 let baseUrl = import.meta.env.VITE_BACKEND_URL;
-let refreshTokenTimout = import.meta.env.VITE_REFRESH_TOKEN_TIMEOUT;
-let refreshTokenTimer;
 
 const LoginPage = () => {
   useEffect(() => {
@@ -42,40 +39,7 @@ export async function action({ request }) {
     throw json({ message: "Could not authenticate user" }, { status: 500 });
   }
   const token = responseData.result.token;
-
-  refreshTokenTimer = setInterval(() => {
-    handleRefreshToken();
-  }, refreshTokenTimout);
-
   localStorage.setItem("token", token);
 
   return redirect("/");
 }
-
-const handleRefreshToken = async () => {
-  const token = getToken();
-
-  if (token === null || token === undefined) {
-    clearInterval(refreshTokenTimer);
-  } else {
-    const response = await fetch(`${baseUrl}/Authentication/RefreshToken`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${getToken()}`,
-      },
-      credentials: "include",
-    });
-
-    const responseData = await response.json();
-    if (response.status === 400 || response.status === 401) {
-      return responseData;
-    }
-
-    if (!response.ok) {
-      throw json({ message: "Could not refresh token" }, { status: 500 });
-    }
-    const token = responseData.result.token;
-    localStorage.setItem("token", token);
-  }
-};

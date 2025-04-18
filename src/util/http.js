@@ -22,6 +22,39 @@ export async function login(command) {
   return data;
 }
 
+export const refreshToken = async () => {
+  console.log("refreshing token");
+  const token = getToken();
+
+  const error = new Error("An error occured");
+  error.code = 401;
+
+  if (token === null || token === undefined) {
+    error.info = "Token is not available";
+    throw error;
+  } else {
+    const response = await fetch(`${baseUrl}/Authentication/RefreshToken`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${getToken()}`,
+      },
+      credentials: "include",
+    });
+
+    const responseData = await response.json();
+
+    if (!response.ok) {
+      error.code = response.status;
+      error.info = await response.json();
+      throw error;
+    }
+    const token = responseData.result.token;
+    localStorage.setItem("token", token);
+    return token;
+  }
+};
+
 export const fetchUsers = async (pageNumber, pageSize, search) => {
   let url = `${baseUrl}/Users?pageNumber=${pageNumber}&pageSize=${pageSize}`;
   if (search) {

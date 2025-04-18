@@ -13,5 +13,5 @@ export async function action() {
   });
 
   localStorage.removeItem("token");
-  return redirect("/");
+  return redirect("/auth/login");
 }

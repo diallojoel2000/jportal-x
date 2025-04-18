@@ -6,17 +6,18 @@ import {
   useSubmit,
   useLoaderData,
 } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
 import Breadcrum from "./Breadcrum";
 import Footer from "./Footer";
 import CustomError from "./CustomError";
+import { refreshToken } from "../../util/http";
 
 let idleTimeout = import.meta.env.VITE_IDLE_TIMEOUT;
 
 const Layout = () => {
   var isAuthenticated = useLoaderData();
-
   const idleTimer = useRef();
   const location = useLocation();
   const submit = useSubmit();
@@ -58,7 +59,15 @@ const Layout = () => {
     };
   }, [isAuthenticated, handleAutoLogout]);
 
-  if (!isAuthenticated) {
+  const { data, isPending, isError, error } = useQuery({
+    queryKey: ["refreshToken"],
+    queryFn: refreshToken,
+    refetchInterval: 280000,
+    refetchIntervalInBackground: true,
+    enabled: isAuthenticated ? true : false,
+  });
+
+  if (!isAuthenticated || isError) {
     clearTimeout(idleTimer.current);
     return <Navigate to="/auth/login" state={{ from: location }} replace />;
   }

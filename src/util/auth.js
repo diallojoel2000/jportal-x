@@ -10,7 +10,7 @@ export const getToken = () => {
 };
 
 export const hasToken = () => {
-  return getToken();
+  return getToken() ? true : false;
 };
 
 export const getUser = () => {

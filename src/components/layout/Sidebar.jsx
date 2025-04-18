@@ -5,6 +5,13 @@ import { NavLink } from "react-router-dom";
 //use UseEffect to load the sidebar if the menu is coming from backend
 const SIDE_BAR_MENU = [
   {
+    name: "Dashboard",
+    path: "/",
+    icon: "bi bi-speedometer",
+    permission: "ManageUser",
+    subMenu: [],
+  },
+  {
     name: "User Management",
     path: "#",
     icon: "bi bi-person-fill-gear",

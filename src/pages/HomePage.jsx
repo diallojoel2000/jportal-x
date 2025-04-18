@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import Card from "../components/Card";
+import Card from "../components/card/Card";
 import Alert from "../components/Alert";
 //import Table from "../components/Table";
 

@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { redirect } from "react-router-dom";
-import { login } from "../http";
+import { login } from "../util/http";
 import AuthForm from "../components/AuthForm";
 import { hasToken, getToken, encrypt } from "../util/auth";
 

@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@popperjs/core": "^2.11.8",
+    "@tanstack/react-query": "^5.74.4",
     "admin-lte": "^4.0.0-beta3",
     "bootstrap": "^5.3.5",
     "crypto-js": "^4.2.0",

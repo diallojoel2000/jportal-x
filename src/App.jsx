@@ -3,7 +3,8 @@ import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import "./App.css";
 import Layout from "./components/layout/Layout";
 import EmptyLayout from "./components/layout/EmptyLayout";
-import UsersPage from "./pages/UsersPage";
+import UsersPage from "./pages/UserManagement/UsersPage";
+import CreateUserPage from "./pages/UserManagement/CreateUserPage";
 import RolePage from "./pages/UserManagement/RolePage";
 import LoginPage, { action as authAction } from "./pages/LoginPage";
 import ErrorPage from "./pages/ErrorPage";
@@ -30,7 +31,8 @@ const router = createBrowserRouter([
     loader: hasToken,
     children: [
       { index: true, element: <HomePage /> },
-      { path: "/user-management/users", element: <UsersPage /> },
+      { path: "/users", element: <UsersPage /> },
+      { path: "/users/create", element: <CreateUserPage /> },
       { path: "/user-management/roles", element: <RolePage /> },
     ],
   },

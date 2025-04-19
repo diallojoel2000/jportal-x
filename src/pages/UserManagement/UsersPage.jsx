@@ -1,19 +1,22 @@
 import { useState, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
-import Card from "../components/card/Card";
-import CardBody from "../components/card/CardBody";
-import CardHeader from "../components/card/CardHeader";
-import CardTool from "../components/card/CardTool";
-import CardButton from "../components/card/CardButton";
-import CardTitle from "../components/card/CardTitle";
-import CardToolSearch from "../components/card/CardToolSearch";
-import { fetchUsers } from "../util/http";
-import Table from "../components/table/Table";
-import PageModal from "../components/PageModal";
-import CardFooter from "../components/card/CardFooter";
+import { fetchUsers } from "../../util/http";
+import Table from "../../components/Table";
+import PageModal from "../../components/PageModal";
+import UserForm from "../../components/UserForm";
+import {
+  Card,
+  CardBody,
+  CardHeader,
+  CardTool,
+  CardToolLink,
+  CardTitle,
+  CardToolSearch,
+  CardFooter,
+} from "../../components/Card";
 
 const PAGE_SIZE = 10;
-const header = ["Fullname", "Username", "Email", "Failed Login"];
+const header = ["Fullname", "Username", "Email", "Failed Login", "Role", ""];
 const UsersPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchText, setSearchText] = useState(null);
@@ -31,14 +34,21 @@ const UsersPage = () => {
   const onOpenModal = () => {
     modalRef.current.showModal();
   };
-  const onCloseModal = () => {
-    modalRef.current.closeModal();
-  };
+
   const handleSearch = () => {
     setSearchText(searchRef.current.value);
   };
   const changePage = (id) => {
     setCurrentPage(id);
+  };
+  const handleDisableUser = (id) => {
+    console.log("disabled", id);
+  };
+  const handlePasswordReset = (id) => {
+    console.log("reset", id);
+  };
+  const handleEditUser = (id) => {
+    console.log("edit", id);
   };
 
   let i = 0;
@@ -52,16 +62,32 @@ const UsersPage = () => {
         <td>{user.userName}</td>
         <td>{user.email}</td>
         <td>{user.accessFailedCount}</td>
+        <td>Not Applicable</td>
+        <td>
+          <span onClick={() => handleDisableUser(user.id)}>
+            <i title="Disable user" className="bi bi-lock text-danger"></i>
+          </span>
+          &nbsp;&nbsp;|&nbsp;&nbsp;
+          <span onClick={() => handlePasswordReset(user.id)}>
+            <i
+              title="Reset password"
+              className="bi bi-arrow-clockwise text-danger"
+            ></i>
+          </span>
+          &nbsp;&nbsp;|&nbsp;&nbsp;
+          <span onClick={() => handleEditUser(user.id)}>
+            <i className="bi bi-pencil-square text-danger"></i>
+          </span>
+        </td>
       </tr>
     ));
   return (
     <>
-      <PageModal ref={modalRef} />
       <Card size={12}>
         <CardHeader>
           <CardTitle title="User Management" />
           <CardTool>
-            <CardButton clickAction={onOpenModal}>Add New User</CardButton>
+            <CardToolLink path="/add-user" title="Add New User" />
             <CardToolSearch ref={searchRef} onSearch={handleSearch} />
           </CardTool>
         </CardHeader>

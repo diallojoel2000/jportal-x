@@ -84,6 +84,7 @@ const Sidebar = () => {
               role="menu"
               data-accordion="false"
             >
+              <li className="nav-header">ADMINISTRATION</li>
               {SIDE_BAR_MENU.map((menu, menuIndex) => (
                 <li
                   key={menuIndex}

@@ -11,7 +11,6 @@ import Header from "./Header";
 import Sidebar from "./Sidebar";
 import Breadcrum from "./Breadcrum";
 import Footer from "./Footer";
-import CustomError from "./CustomError";
 import { refreshToken } from "../../util/http";
 
 let idleTimeout = import.meta.env.VITE_IDLE_TIMEOUT;
@@ -82,7 +81,6 @@ const Layout = () => {
             <div className="container-fluid">
               <div className="row">
                 <Breadcrum />
-                <div id="alert-div"></div>
                 <Outlet />
               </div>
             </div>

@@ -23,7 +23,6 @@ export async function login(command) {
 }
 
 export const refreshToken = async () => {
-  console.log("refreshing token");
   const token = getToken();
 
   const error = new Error("An error occured");
@@ -77,4 +76,27 @@ export const fetchUsers = async (pageNumber, pageSize, search) => {
 
   const users = await response.json();
   return users;
+};
+
+export const createUser = async (command) => {
+  const response = await fetch(`${baseUrl}/Users`, {
+    method: "POST",
+    body: JSON.stringify(command),
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${getToken()}`,
+    },
+    credentials: "include",
+  });
+
+  const responseData = await response.json();
+
+  if (!response.ok) {
+    const error = new Error("An error occured");
+    error.code = response.status;
+    error.info = responseData;
+    throw error;
+  }
+
+  return responseData;
 };

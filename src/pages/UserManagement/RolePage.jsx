@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import Card from "../../components/card/Card";
+import { Card } from "../../components/Card";
 
 const ROLES = [
   { id: 1, name: "Admin" },

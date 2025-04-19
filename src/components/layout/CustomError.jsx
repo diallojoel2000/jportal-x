@@ -1,32 +1,25 @@
-import { useActionData } from "react-router-dom";
+import { useState } from "react";
+import { useSelector } from "react-redux";
 
 const CustomError = () => {
-  const data = useActionData();
+  const message = useSelector((state) => state.alert.message);
+  console.log("Custom error", message);
 
   return (
     <>
-      {data && data.errors && (
-        <div class="alert alert-danger" role="alert">
-          <ul>
-            {Object.values(data.errors).map((error) => (
-              <li key={error}>{error}</li>
-            ))}
-          </ul>
-        </div>
-      )}
-      {data &&
-        data.errors &&
-        data.result.displayMessage(
-          <div class="alert alert-success" role="alert">
+      {message.payload && (
+        <div className={`alert alert-danger`} role="alert">
+          <h5>{message.payload.title}</h5>
+          {message.payload.errors && (
             <ul>
-              {Object.values(data.errors).map((error) => (
+              {Object.values(message.payload.errors).map((error) => (
                 <li key={error}>{error}</li>
               ))}
             </ul>
-          </div>
-        )}
+          )}
+        </div>
+      )}
     </>
   );
 };
-
 export default CustomError;

@@ -1,13 +1,7 @@
-import { useState, useImperativeHandle, createContext } from "react";
-import { Modal, Button } from "react-bootstrap";
+import { useState, useImperativeHandle } from "react";
+import { Modal } from "react-bootstrap";
 
-const ModalContext = createContext();
-
-export const useModalContext = () => {
-  const ctx = useContext(ModalContext);
-  return ctx;
-};
-const PageModal = ({ ref }) => {
+const PageModal = ({ ref, title, children }) => {
   const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);
@@ -31,17 +25,10 @@ const PageModal = ({ ref }) => {
     >
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>Modal title</Modal.Title>
+          <Modal.Title>{title}</Modal.Title>
         </Modal.Header>
 
-        <Modal.Body>
-          <p>Modal body text goes here.</p>
-        </Modal.Body>
-
-        <Modal.Footer>
-          <Button variant="secondary">Close</Button>
-          <Button variant="primary">Save changes</Button>
-        </Modal.Footer>
+        <Modal.Body>{children}</Modal.Body>
       </Modal>
     </div>
   );

@@ -19,13 +19,12 @@ const CreateUserPage = () => {
   };
   return (
     <>
-      {showError && <CustomError />}
       <Card size={8}>
         <CardHeader>
           <CardTitle title="Create User" />
         </CardHeader>
         <CardBody>
-          <UserForm onError={handleShowError} />
+          <UserForm />
         </CardBody>
       </Card>
     </>

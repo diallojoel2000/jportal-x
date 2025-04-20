@@ -1,25 +1,14 @@
 import { useState, useEffect } from "react";
-import { Card } from "../../components/Card";
-
-const ROLES = [
-  { id: 1, name: "Admin" },
-  { id: 2, name: "Teller" },
-  { id: 3, name: "Super Admin" },
-  { id: 4, name: "Consultant" },
-];
-const PERMISSIONS = [
-  { id: "1", name: "ManageAccount" },
-  { id: "2", name: "ManageCompany" },
-  { id: "3", name: "ManageRole" },
-  { id: "4", name: "ManageUser" },
-];
-
-const ROLE_MATRIX = [
-  { roleId: 1, permissionId: "4" },
-  { roleId: 1, permissionId: "3" },
-  { roleId: 2, permissionId: "2" },
-  { roleId: 2, permissionId: "1" },
-];
+import { useQuery } from "@tanstack/react-query";
+import {
+  Card,
+  CardBody,
+  CardHeader,
+  CardTool,
+  CardToolLink,
+  CardTitle,
+} from "../../components/Card";
+import { getRoleMatrix } from "../../util/http";
 
 const RolePage = () => {
   const [roleMatrix, setRoleMatrix] = useState([]);
@@ -47,41 +36,63 @@ const RolePage = () => {
     });
   };
 
+  const { data, isPending, isError, error, isSuccess } = useQuery({
+    queryKey: ["getRoleMatrix"],
+    queryFn: getRoleMatrix,
+  });
+  if (isError) {
+    console.log("An error occured");
+  }
+  let table;
   useEffect(() => {
-    setRoleMatrix(ROLE_MATRIX);
-  }, []);
+    if (data) {
+      setRoleMatrix(data.roleMappings);
+    }
+  }, [data]);
 
   return (
-    <Card title={"Role Matrix"} size={12}>
-      <table className="table table-hover text-nowrap">
-        <thead>
-          <tr>
-            <th>Permissions</th>
-            {ROLES.map((role) => (
-              <th key={role.id} className="text-center">
-                {role.name}
-              </th>
-            ))}
-          </tr>
-          {PERMISSIONS.map((permission) => (
-            <tr key={permission.id}>
-              <td>{permission.name}</td>
-              {ROLES.map((role) => (
-                <td key={role.id} className="text-center">
-                  <input
-                    type="checkbox"
-                    className="form-check-input"
-                    checked={hasPermission(role.id, permission.id)}
-                    onChange={() => {
-                      checkToggle(role.id, permission.id);
-                    }}
-                  />
-                </td>
-              ))}
+    <Card size={12}>
+      <CardHeader>
+        <CardTitle title="Role Matrix" />
+        <CardTool>
+          <CardToolLink path="#" title="Add Role" />
+        </CardTool>
+      </CardHeader>
+      <CardBody>
+        {/* <Table header={header} tableBody={tableBody}></Table> */}
+        <table className="table table-striped text-nowrap">
+          <thead>
+            <tr>
+              <th>Permissions</th>
+              {data &&
+                data.roles.map((role) => (
+                  <th key={role.id} className="text-center">
+                    {role.name}
+                  </th>
+                ))}
             </tr>
-          ))}
-        </thead>
-      </table>
+            {data &&
+              data.permissions.map((permission) => (
+                <tr key={permission.id}>
+                  <td>{permission.name}</td>
+                  {data &&
+                    data.roles.map((role) => (
+                      <td key={role.id} className="text-center">
+                        <input
+                          type="checkbox"
+                          className="form-check-input"
+                          checked={hasPermission(role.id, permission.id)}
+                          onChange={() => {
+                            checkToggle(role.id, permission.id);
+                          }}
+                        />
+                      </td>
+                    ))}
+                </tr>
+              ))}
+          </thead>
+        </table>
+      </CardBody>
     </Card>
   );
 };

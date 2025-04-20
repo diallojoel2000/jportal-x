@@ -2,8 +2,6 @@ import { useState, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { fetchUsers } from "../../util/http";
 import Table from "../../components/Table";
-import PageModal from "../../components/PageModal";
-import UserForm from "../../components/UserForm";
 import {
   Card,
   CardBody,
@@ -87,7 +85,7 @@ const UsersPage = () => {
         <CardHeader>
           <CardTitle title="User Management" />
           <CardTool>
-            <CardToolLink path="/add-user" title="Add New User" />
+            <CardToolLink path="/users/create" title="Add New User" />
             <CardToolSearch ref={searchRef} onSearch={handleSearch} />
           </CardTool>
         </CardHeader>

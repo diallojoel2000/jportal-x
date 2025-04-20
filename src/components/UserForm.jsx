@@ -1,13 +1,21 @@
+import { useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { createUser } from "../util/http";
 import { useDispatch } from "react-redux";
 import { alertActions } from "../store/alert-slice";
-import CustomError from "../components/layout/CustomError";
 
-const UserForm = ({ onError }) => {
+const UserForm = () => {
+  const navigation = useNavigate();
   const dispatch = useDispatch();
-  const { mutate, isPending, isError, error } = useMutation({
+
+  const { mutate, isPending } = useMutation({
     mutationFn: createUser,
+    onSuccess: () => {
+      navigation("/users");
+    },
+    onError: (error, data) => {
+      dispatch(alertActions.showError(error?.info));
+    },
   });
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -16,13 +24,8 @@ const UserForm = ({ onError }) => {
     mutate(command);
   };
 
-  if (isError) {
-    dispatch(alertActions.showError(error?.info));
-    onError();
-  }
   return (
     <>
-      {/* {isError && error && <CustomError />} */}
       <form
         className="needs-validation"
         autoComplete="off"

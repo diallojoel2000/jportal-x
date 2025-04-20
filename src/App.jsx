@@ -1,5 +1,5 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
+import { QueryClientProvider } from "@tanstack/react-query";
 import "./App.css";
 import Layout from "./components/layout/Layout";
 import EmptyLayout from "./components/layout/EmptyLayout";
@@ -11,6 +11,7 @@ import ErrorPage from "./pages/ErrorPage";
 import HomePage from "./pages/HomePage";
 import { action as logoutAction } from "./pages/Logout";
 import { hasToken } from "./util/auth";
+import { queryClient } from "./util/http";
 
 const router = createBrowserRouter([
   {
@@ -33,12 +34,11 @@ const router = createBrowserRouter([
       { index: true, element: <HomePage /> },
       { path: "/users", element: <UsersPage /> },
       { path: "/users/create", element: <CreateUserPage /> },
-      { path: "/user-management/roles", element: <RolePage /> },
+      { path: "/roles", element: <RolePage /> },
     ],
   },
 ]);
 
-const queryClient = new QueryClient();
 function App() {
   return (
     <QueryClientProvider client={queryClient}>

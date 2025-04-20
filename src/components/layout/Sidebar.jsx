@@ -19,13 +19,13 @@ const SIDE_BAR_MENU = [
     subMenu: [
       {
         name: "Users",
-        path: "/user-management/users",
+        path: "/users",
         icon: "bi bi-people",
         permission: "ManageUser",
       },
       {
         name: "Roles",
-        path: "/user-management/roles",
+        path: "/roles",
         icon: "bi bi-universal-access",
         permission: "ManageUser",
       },

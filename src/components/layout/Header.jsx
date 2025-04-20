@@ -1,7 +1,11 @@
 import { Form } from "react-router-dom";
-import { getUser } from "../../util/auth";
+import { hasToken, getUser } from "../../util/auth";
 const Header = () => {
-  const user = getUser();
+  const isAuthenticated = hasToken();
+  let user;
+  if (isAuthenticated) {
+    user = getUser();
+  }
   return (
     <>
       <nav className="app-header navbar navbar-expand bg-body">
@@ -62,32 +66,34 @@ const Header = () => {
                 </a>
               </div>
             </li>
-            <li className="nav-item dropdown user-menu">
-              <a
-                href="#"
-                className="nav-link dropdown-toggle"
-                data-bs-toggle="dropdown"
-              >
-                <img
-                  src="/vite.svg"
-                  className="user-image rounded-circle shadow"
-                  alt="User Image"
-                />
-                <span className="d-none d-md-inline">{user.Username}</span>
-              </a>
-              <ul className="dropdown-menu dropdown-menu-lg dropdown-menu-end">
-                <li className="user-footer">
-                  <Form method="POST" action="/auth/logout">
-                    <button
-                      type="submit"
-                      className="btn btn-default btn-flat float-end"
-                    >
-                      Logout
-                    </button>
-                  </Form>
-                </li>
-              </ul>
-            </li>
+            {isAuthenticated && (
+              <li className="nav-item dropdown user-menu">
+                <a
+                  href="#"
+                  className="nav-link dropdown-toggle"
+                  data-bs-toggle="dropdown"
+                >
+                  <img
+                    src="/vite.svg"
+                    className="user-image rounded-circle shadow"
+                    alt="User Image"
+                  />
+                  <span className="d-none d-md-inline">{user.Username}</span>
+                </a>
+                <ul className="dropdown-menu dropdown-menu-lg dropdown-menu-end">
+                  <li className="user-footer">
+                    <Form method="POST" action="/auth/logout">
+                      <button
+                        type="submit"
+                        className="btn btn-default btn-flat float-end"
+                      >
+                        Logout
+                      </button>
+                    </Form>
+                  </li>
+                </ul>
+              </li>
+            )}
           </ul>
         </div>
       </nav>

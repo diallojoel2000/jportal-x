@@ -1,11 +1,14 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = { message: { errors: {} }, displayMessage: null };
+const initialState = { message: null };
 
 const alertSlice = createSlice({
   name: "alert",
   initialState: initialState,
   reducers: {
+    clearError(state) {
+      state.message = initialState;
+    },
     showError(state, payload) {
       state.message = payload;
     },

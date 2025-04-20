@@ -5,18 +5,21 @@ import {
   useLocation,
   useSubmit,
   useLoaderData,
+  useNavigate,
 } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
 import Breadcrum from "./Breadcrum";
+import CustomError from "./CustomError";
 import Footer from "./Footer";
 import { refreshToken } from "../../util/http";
 
 let idleTimeout = import.meta.env.VITE_IDLE_TIMEOUT;
 
 const Layout = () => {
-  var isAuthenticated = useLoaderData();
+  const isAuthenticated = useLoaderData();
+  const navigation = useNavigate();
   const idleTimer = useRef();
   const location = useLocation();
   const submit = useSubmit();
@@ -29,6 +32,14 @@ const Layout = () => {
       submit(null, { method: "post", action: "/auth/logout" });
     }, idleTimeout);
   };
+
+  const { data, isPending, isError, error } = useQuery({
+    queryKey: ["refreshToken"],
+    queryFn: refreshToken,
+    refetchInterval: 280000,
+    refetchIntervalInBackground: true,
+    enabled: isAuthenticated ? true : false,
+  });
 
   useEffect(() => {
     document.body.className = "sidebar-expand-lg bg-body-tertiary";
@@ -56,15 +67,7 @@ const Layout = () => {
       document.removeEventListener("keypress", handleKeyPress);
       clearTimeout(idleTimer.current);
     };
-  }, [isAuthenticated, handleAutoLogout]);
-
-  const { data, isPending, isError, error } = useQuery({
-    queryKey: ["refreshToken"],
-    queryFn: refreshToken,
-    refetchInterval: 280000,
-    refetchIntervalInBackground: true,
-    enabled: isAuthenticated ? true : false,
-  });
+  }, [isAuthenticated, handleAutoLogout, isError]);
 
   if (!isAuthenticated || isError) {
     clearTimeout(idleTimer.current);
@@ -81,6 +84,7 @@ const Layout = () => {
             <div className="container-fluid">
               <div className="row">
                 <Breadcrum />
+                <CustomError />
                 <Outlet />
               </div>
             </div>

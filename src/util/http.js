@@ -1,5 +1,8 @@
+import { QueryClient } from "@tanstack/react-query";
 import { getToken } from "./auth";
 const baseUrl = import.meta.env.VITE_BACKEND_URL;
+
+export const queryClient = new QueryClient();
 
 export async function login(command) {
   const response = await fetch(`${baseUrl}/Authentication/Login`, {
@@ -99,4 +102,26 @@ export const createUser = async (command) => {
   }
 
   return responseData;
+};
+
+export const getRoleMatrix = async () => {
+  let url = `${baseUrl}/Roles/GetRoleMatrix`;
+
+  const response = await fetch(url, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${getToken()}`,
+    },
+  });
+
+  if (!response.ok) {
+    const error = new Error("An error occured");
+    error.code = response.status;
+    error.info = await response.json();
+    throw error;
+  }
+
+  const roleMatrix = await response.json();
+  return roleMatrix;
 };

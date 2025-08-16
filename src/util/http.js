@@ -104,11 +104,10 @@ export const createUser = async (command) => {
   return responseData;
 };
 
-export const getRoleMatrix = async () => {
-  let url = `${baseUrl}/Roles/GetRoleMatrix`;
-
-  const response = await fetch(url, {
-    method: "GET",
+export const adminResetPassword = async (command) => {
+  const response = await fetch(`${baseUrl}/Users/AdminResetPassword`, {
+    method: "POST",
+    body: JSON.stringify(command),
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${getToken()}`,
@@ -122,6 +121,5 @@ export const getRoleMatrix = async () => {
     throw error;
   }
 
-  const roleMatrix = await response.json();
-  return roleMatrix;
+  return await response.json();
 };

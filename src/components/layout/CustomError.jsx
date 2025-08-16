@@ -7,16 +7,16 @@ const CustomError = () => {
   const message = useSelector((state) => state.alert.message);
 
   useEffect(() => {
-    if (message && message.payload) {
+    if (message && (message.payload || message.payload.isSuccess)) {
       setTimeout(() => {
         dispatch(alertActions.clearError());
-      }, 3000);
+      }, 10000);
     }
   }, [message, dispatch]);
 
   return (
     <>
-      {message && message.payload && (
+      {message && message.payload && !message.payload.isSuccess && (
         <div className={`alert alert-danger`} role="alert">
           <h5>{message.payload.title}</h5>
           {message.payload.errors && (
@@ -26,6 +26,12 @@ const CustomError = () => {
               ))}
             </ul>
           )}
+        </div>
+      )}
+      {message && message.payload && message.payload.isSuccess && (
+        <div className={`alert alert-success`} role="alert">
+          <h5>Successful!</h5>
+          <p>{message.payload.displayMessage}</p>
         </div>
       )}
     </>

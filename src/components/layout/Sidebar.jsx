@@ -32,21 +32,21 @@ const SIDE_BAR_MENU = [
     ],
   },
   {
-    name: "User Management1",
+    name: "NIN Sync",
     path: "#",
     icon: "bi bi-person-fill-gear",
     permission: "ManageUser",
     subMenu: [
       {
-        name: "Users1",
-        path: "/user-management/users1",
-        icon: "bi bi-people",
+        name: "Customer Info",
+        path: "/nin",
+        icon: "bi bi-universal-access",
         permission: "ManageUser",
       },
       {
-        name: "Roles1",
-        path: "/user-management/roles1",
-        icon: "bi bi-universal-access",
+        name: "KYC Sync",
+        path: "/nin/detail",
+        icon: "bi bi-people",
         permission: "ManageUser",
       },
     ],

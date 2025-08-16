@@ -9,27 +9,27 @@ import {
   CardToolSearch,
   CardFooter,
 } from "../../components/Card";
-import UserForm from "../../components/UserForm";
+import RoleForm from "../../components/RoleForm";
 import CustomError from "../../components/layout/CustomError";
 import Page from "../../components/layout/Page";
 
-const CreateUserPage = () => {
+const CreateRolePage = () => {
   const [showError, setShowError] = useState(false);
   const handleShowError = () => {
     setShowError(true);
   };
   return (
-    <Page title="Create Users">
-      <Card size={8}>
+    <Page title="Create Roles">
+      <Card size={6}>
         <CardHeader>
-          <CardTitle title="Create User" />
+          <CardTitle title="Create Role" />
         </CardHeader>
         <CardBody>
-          <UserForm />
+          <RoleForm />
         </CardBody>
       </Card>
     </Page>
   );
 };
 
-export default CreateUserPage;
+export default CreateRolePage;

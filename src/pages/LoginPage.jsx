@@ -1,15 +1,21 @@
 import { useEffect, useRef } from "react";
-import { redirect } from "react-router-dom";
+import { redirect, useNavigate, useLoaderData } from "react-router-dom";
 import AuthForm from "../components/AuthForm";
 import { encrypt } from "../util/auth";
 
 let baseUrl = import.meta.env.VITE_BACKEND_URL;
 
 const LoginPage = () => {
+  const navigate = useNavigate();
+  const isAuthenticated = useLoaderData();
   useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/");
+      return;
+    }
     document.body.className = "login-page bg-body-secondary";
-  }, []);
-  return <AuthForm />;
+  }, [isAuthenticated]);
+  return <>{!isAuthenticated && <AuthForm />}</>;
 };
 
 export default LoginPage;

@@ -37,6 +37,27 @@ export const CardToolSearch = ({ ref, onSearch }) => {
     </>
   );
 };
+
+export const CardToolDateRange = ({ startRef, endRef, onDateChange }) => {
+  return (
+    <>
+      <input
+        type="date"
+        class="form-control"
+        ref={startRef}
+        onChange={onDateChange}
+      />
+      <span class="input-group-text">-</span>
+      <input
+        type="date"
+        class="form-control"
+        ref={endRef}
+        onChange={onDateChange}
+      />
+    </>
+  );
+};
+
 export const CardToolLink = ({ title, path }) => {
   return (
     <div>

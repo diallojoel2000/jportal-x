@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { createUser } from "../util/http";
+import { getAppRoles } from "../util/roleServices";
 import { useDispatch } from "react-redux";
 import { alertActions } from "../store/alert-slice";
 
@@ -23,6 +24,11 @@ const UserForm = () => {
     const command = Object.fromEntries(fd);
     mutate(command);
   };
+
+  const { data } = useQuery({
+    queryKey: ["getAppRoles"],
+    queryFn: () => getAppRoles(),
+  });
 
   return (
     <>
@@ -73,6 +79,19 @@ const UserForm = () => {
               className="form-control"
               required
             />
+          </div>
+
+          <div className="col-md-6">
+            <label className="form-label">Role</label>
+            <select className="form-control" name="roleId">
+              <option value=""> --Select Role --</option>
+              {data &&
+                data.map((role) => (
+                  <option key={role.id} value={role.id}>
+                    {role.name}
+                  </option>
+                ))}
+            </select>
           </div>
           <div className="col-md-6 offset-md-6">
             <button

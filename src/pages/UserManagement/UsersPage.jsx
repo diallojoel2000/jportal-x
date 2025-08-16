@@ -1,7 +1,9 @@
 import { useState, useRef } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { fetchUsers } from "../../util/http";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { fetchUsers, adminResetPassword } from "../../util/http";
 import Table from "../../components/Table";
+import Page from "../../components/layout/Page";
+import { useDispatch } from "react-redux";
 import {
   Card,
   CardBody,
@@ -12,6 +14,7 @@ import {
   CardToolSearch,
   CardFooter,
 } from "../../components/Card";
+import { alertActions } from "../../store/alert-slice";
 
 const PAGE_SIZE = 10;
 const header = ["Fullname", "Username", "Email", "Failed Login", "Role", ""];
@@ -20,6 +23,7 @@ const UsersPage = () => {
   const [searchText, setSearchText] = useState(null);
   const searchRef = useRef();
   const modalRef = useRef();
+  const dispatch = useDispatch();
 
   const { data, isPending, isError, error } = useQuery({
     queryKey: [
@@ -27,6 +31,17 @@ const UsersPage = () => {
       { pageNumber: currentPage, pageSize: PAGE_SIZE, search: searchText },
     ],
     queryFn: () => fetchUsers(currentPage, PAGE_SIZE, searchText),
+  });
+
+  const { mutate } = useMutation({
+    mutationFn: adminResetPassword,
+    onSuccess: (data) => {
+      //console.log(data);
+      dispatch(alertActions.showSuccess(data));
+    },
+    onError: (error, data) => {
+      dispatch(alertActions.showError(error?.info));
+    },
   });
 
   const onOpenModal = () => {
@@ -43,7 +58,7 @@ const UsersPage = () => {
     console.log("disabled", id);
   };
   const handlePasswordReset = (id) => {
-    console.log("reset", id);
+    mutate({ UserId: id });
   };
   const handleEditUser = (id) => {
     console.log("edit", id);
@@ -80,7 +95,7 @@ const UsersPage = () => {
       </tr>
     ));
   return (
-    <>
+    <Page title="Users">
       <Card size={12}>
         <CardHeader>
           <CardTitle title="User Management" />
@@ -98,7 +113,7 @@ const UsersPage = () => {
           totalPages={data ? data.totalPages : 1}
         />
       </Card>
-    </>
+    </Page>
   );
 };
 

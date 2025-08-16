@@ -7,12 +7,14 @@ const alertSlice = createSlice({
   initialState: initialState,
   reducers: {
     clearError(state) {
-      state.message = initialState;
+      state.message = null;
     },
     showError(state, payload) {
       state.message = payload;
     },
-    showSuccess(state, payload) {},
+    showSuccess(state, payload) {
+      state.message = payload;
+    },
   },
 });
 

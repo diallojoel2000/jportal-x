@@ -1,0 +1,14 @@
+/* Local font fallback (system stack) */
+:root {
+  --font-family-system: system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Noto Sans", "Source Sans 3", "Segoe UI Emoji",
+    "Segoe UI Symbol";
+}
+html,
+body,
+button,
+input,
+select,
+textarea {
+  font-family: var(--font-family-system);
+}
